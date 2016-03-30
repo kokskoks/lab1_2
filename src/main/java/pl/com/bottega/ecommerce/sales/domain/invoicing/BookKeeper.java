@@ -22,36 +22,28 @@ import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 public class BookKeeper {
 
+	private TaxCalculationStrategy taxCalculationStrategy;
+
+	public BookKeeper(TaxCalculationStrategy taxCalculationStrategy) {
+		this.taxCalculationStrategy = taxCalculationStrategy;
+	}
+
+	public TaxCalculationStrategy getTaxCalculationStrategy() {
+		return taxCalculationStrategy;
+	}
+
+	public void setTaxCalculationStrategy(TaxCalculationStrategy taxCalculationStrategy) {
+		this.taxCalculationStrategy = taxCalculationStrategy;
+	}
+
 	public Invoice issuance(ClientRequest clientRequest) {
 		Invoice invoice = InvoiceFactory.createInvoiceInstance(Id.generate(), clientRequest.getClient());
 
 		for (RequestItem item : clientRequest.getItems()) {
-			Money net = item.getTotalCost();
-			BigDecimal ratio = null;
-			String desc = null;
-			
-			switch (item.getProductData().getType()) {
-			case DRUG:
-				ratio = BigDecimal.valueOf(0.05);
-				desc = "5% (D)";
-				break;
-			case FOOD:
-				ratio = BigDecimal.valueOf(0.07);
-				desc = "7% (F)";
-				break;
-			case STANDARD:
-				ratio = BigDecimal.valueOf(0.23);
-				desc = "23%";
-				break;
-				
-			default:
-				throw new IllegalArgumentException(item.getProductData().getType() + " not handled");
-			}
-					
-			Money taxValue = net.multiplyBy(ratio);
-			
-			Tax tax = new Tax(taxValue, desc);
-			
+
+
+            Money net = item.getTotalCost();
+            Tax tax = taxCalculationStrategy.calculateTax(item);
 
 			InvoiceLine invoiceLine = new InvoiceLine(item.getProductData(),
 					item.getQuantity(), net, tax);
