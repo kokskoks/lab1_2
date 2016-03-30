@@ -15,6 +15,6 @@ public class SimplePayment extends Payment {
     public Payment rollBack() {
         Id id = Id.generate();
 
-        return new SimplePayment(id, clientData, amount.multiplyBy(-1));
+        return PaymentFactory.createPaymentInstance(id, clientData, amount.multiplyBy(-1));
     }
 }
