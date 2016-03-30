@@ -19,13 +19,13 @@ import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
-public class Payment {
+public abstract class Payment {
 
-	private ClientData clientData;
+	protected ClientData clientData;
 
-	private Money amount;
+	protected Money amount;
 
-	private Id aggregateId;
+	protected Id aggregateId;
 
 
 	public Payment(Id aggregateId, ClientData clientData, Money amount) {
@@ -34,9 +34,5 @@ public class Payment {
 		this.amount = amount;
 	}
 
-	public Payment rollBack() {
-		Id id = Id.generate();
-
-		return new Payment(id, clientData, amount.multiplyBy(-1));		
-	}
+	public abstract Payment rollBack();
 }
