@@ -16,18 +16,16 @@
 package pl.com.bottega.ecommerce.sales.domain.invoicing;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.ClientData;
 import pl.com.bottega.ecommerce.canonicalmodel.publishedlanguage.Id;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
 public class BookKeeper {
 
-	public Invoice issuance(ClientData client, List<RequestItem> items) {
-		Invoice invoice = InvoiceFactory.createInvoiceInstance(Id.generate(), client);
+	public Invoice issuance(ClientRequest clientRequest) {
+		Invoice invoice = InvoiceFactory.createInvoiceInstance(Id.generate(), clientRequest.getClient());
 
-		for (RequestItem item : items) {
+		for (RequestItem item : clientRequest.getItems()) {
 			Money net = item.getTotalCost();
 			BigDecimal ratio = null;
 			String desc = null;
